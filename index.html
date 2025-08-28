@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mythos Quotes</title>
+  <meta name="theme-color" content="#0E0A16">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Summon daily mythical quotes. Save to your Vault, forge merch, and keep your streak of blessings.">
+  <link rel="preload" as="image" href="assets/mockups/mug.png">
+  <link rel="preload" as="image" href="assets/mockups/tshirt.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <img src="assets/icons/icon-192.png" alt="" class="brand-icon" />
+      <span class="brand-name">Mythos Quotes</span>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Primary">
+      <button class="tab active" data-view="home" aria-selected="true">Oracle</button>
+      <button class="tab" data-view="vault" aria-selected="false">Vault</button>
+      <button class="tab" data-view="forge" aria-selected="false">Forge</button>
+      <button class="tab" data-view="shop" aria-selected="false">Shop</button>
+    </nav>
+  </header>
+
+  <main id="views">
+    <!-- HOME/ORACLE -->
+    <section id="home" class="view active" aria-labelledby="Oracle">
+      <div class="summon-wrap">
+        <div class="rune-ring" aria-hidden="true"></div>
+        <blockquote id="quoteBox" class="quote">
+          <p class="quote-text">Summon today's wisdom.</p>
+          <footer class="quote-author">— Tap the sigil —</footer>
+        </blockquote>
+        <button id="summonBtn" class="button primary big">🔮 Summon</button>
+        <div class="quote-actions" hidden>
+          <button id="saveBtn" class="button">Save to Vault</button>
+          <button id="shareBtn" class="button">Share</button>
+          <button id="specialBtn" class="button special" title="Special inscription">✨ Inscribe</button>
+        </div>
+        <div class="streak" id="streak"></div>
+      </div>
+    </section>
+
+    <!-- VAULT -->
+    <section id="vault" class="view">
+      <h2>Your Vault</h2>
+      <p class="subtle">Collect your favourites. Free tier stores up to <strong>10</strong>. Unlock unlimited with a subscription.</p>
+      <ul id="vaultList" class="vault-list"></ul>
+    </section>
+
+    <!-- FORGE (Merch Preview) -->
+    <section id="forge" class="view">
+      <h2>The Forge</h2>
+      <p class="subtle">Transmute a quote into merch. Export print-ready art and plug into your provider.</p>
+      <div class="forge-controls">
+        <label>Selected Quote
+          <textarea id="forgeQuote" rows="3" placeholder="Pick a quote from Oracle or Vault"></textarea>
+        </label>
+        <label>Font Size
+          <input type="range" id="fontSize" min="24" max="80" value="42">
+        </label>
+        <label>Text Alignment
+          <select id="textAlign">
+            <option value="center" selected>Center</option>
+            <option value="left">Left</option>
+            <option value="right">Right</option>
+          </select>
+        </label>
+        <div class="forge-buttons">
+          <button id="applyToMug" class="button">Preview on Mug</button>
+          <button id="applyToShirt" class="button">Preview on T-Shirt</button>
+          <button id="downloadPNG" class="button primary">Download Print PNG</button>
+        </div>
+      </div>
+      <div class="mockups">
+        <div class="mockup mug">
+          <img src="assets/mockups/mug.png" alt="Mug mockup">
+          <div id="mugOverlay" class="overlay"></div>
+        </div>
+        <div class="mockup tshirt">
+          <img src="assets/mockups/tshirt.png" alt="T‑Shirt mockup">
+          <div id="shirtOverlay" class="overlay"></div>
+        </div>
+      </div>
+      <canvas id="exportCanvas" width="2400" height="1600" hidden></canvas>
+    </section>
+
+    <!-- SHOP / SUBSCRIBE -->
+    <section id="shop" class="view">
+      <h2>Mythos Shop</h2>
+      <p class="subtle">Subscribe to unlock unlimited vault, rare “relic” themes, and priority summoning.</p>
+      <div class="pricing">
+        <div class="card">
+          <h3>Free</h3>
+          <ul>
+            <li>Daily quote ritual</li>
+            <li>Save up to 10 quotes</li>
+            <li>Forge previews</li>
+          </ul>
+          <button class="button" disabled>Current</button>
+        </div>
+        <div class="card featured">
+          <h3>Relic Pass</h3>
+          <div class="price">£1.99<span>/mo</span></div>
+          <ul>
+            <li>Unlimited Vault</li>
+            <li>Special “Relic” quotes</li>
+            <li>Exclusive sigils & themes</li>
+          </ul>
+          <button id="subscribeBtn" class="button primary">Subscribe via PayPal</button>
+        </div>
+      </div>
+      <div class="subtle">
+        <p>You’ll be redirected to PayPal. After payment, return here; your perks unlock automatically. Configure links in <code>app.js → PAYPAL_CONFIG</code>.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Fancy Install Prompt -->
+  <div id="installToast" class="install-toast" hidden role="dialog" aria-live="polite">
+    <div class="toast-content">
+      <div class="toast-title">Add Mythos to your Home Screen</div>
+      <div class="toast-body">For a smoother ritual and offline magic, install the app.</div>
+      <div class="toast-actions">
+        <button id="installNow" class="button primary small">Install</button>
+        <button id="howToInstall" class="button small">How?</button>
+        <button id="dismissInstall" class="button small">Later</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- iOS How-to Modal -->
+  <div id="iosHelp" class="modal" hidden role="dialog" aria-modal="true">
+    <div class="modal-inner">
+      <h3>Install on iPhone/iPad</h3>
+      <p>Tap <strong>Share</strong> → <strong>Add to Home Screen</strong> → <strong>Add</strong>.</p>
+      <button id="closeIosHelp" class="button">Got it</button>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <button id="installBtn" class="button ghost">＋ Install</button>
+    <button id="randomBtn" class="button ghost">🎲 Random</button>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
